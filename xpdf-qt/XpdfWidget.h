@@ -888,6 +888,7 @@ protected:
   virtual void mouseMoveEvent(QMouseEvent *e);
   virtual void wheelEvent(QWheelEvent *e);
   virtual bool eventFilter(QObject *obj, QEvent *event);
+  void              handlePageChange(int code); // -1, +1 -> move pages
 
   //! \endcond
 

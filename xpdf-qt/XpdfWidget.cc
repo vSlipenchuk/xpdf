@@ -1977,11 +1977,13 @@ void XpdfWidget::keyPressEvent(QKeyEvent *e) {
       core->scrollDown();
       return;
     } else if (key == Qt::Key_PageUp) {
-      core->scrollPageUp();
+      //core->scrollPageUp();
+	    handlePageChange(-1);
       return;
     } else if (key == Qt::Key_PageDown ||
 	       key == Qt::Key_Space) {
-      core->scrollPageDown();
+      //core->scrollPageDown();
+	   handlePageChange(1);
       return;
     }
   }
@@ -2003,6 +2005,30 @@ void XpdfWidget::mousePressEvent(QMouseEvent *e) {
   emit mousePress(e);
 }
 
+void XpdfWidget::handlePageChange(int code) { // -1, +1 -> move pages
+double f = getZoom(); if (f<0) f=100;
+int r =  getRotate();
+if ( r == 90 || r == 270) {  } else r=0;
+if (code==-1) { // go back , pgUP
+   if (r) { // if rotated 
+        gotoPreviousPage();
+        zoomCentered(f/3);
+        zoomCentered(f);
+        }
+    else scrollPageUp();
+}
+else if (code == 1) // go for, pageDown
+  {
+   if (r) { // rotated, goto nextpage, keep center of page
+    gotoNextPage();
+    zoomCentered(f/3);
+    zoomCentered(f);
+    }
+    else scrollPageDown(); // just next screen 
+  }
+}
+
+
 int sensScroll = 50; // sesitive scroll area
 double zoomStep = 0.05; 
 
@@ -2015,23 +2041,8 @@ f = getZoom(); if (f<0) f=100;
 int r =  getRotate();
 if ( r == 90 || r == 270) {  } else r=0;
 
-if (e->y() < sensScroll  ) { // go back 
-   if (r) { // if rotated 
-        gotoPreviousPage();
-        zoomCentered(f/3);
-        zoomCentered(f);
-        }
-    else scrollPageUp();
-   }
-else if (height()-e->y() < sensScroll ) // go UP
-  {
-   if (r) { // rotated, goto nextpage, keep center of page
-    gotoNextPage();
-    zoomCentered(f/3);
-    zoomCentered(f);
-    }
-    else scrollPageDown(); // just next screen 
-  }
+if (e->y() < sensScroll  )                        handlePageChange(-1) ; // go back 
+else if (height()-e->y() < sensScroll )   handlePageChange(1); // go UP
 else if (e->x() < sensScroll) // zoom less
  {
   f=core->getZoom();

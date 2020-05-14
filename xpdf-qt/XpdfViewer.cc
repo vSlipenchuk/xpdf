@@ -1608,11 +1608,11 @@ void XpdfViewer::cmdOpenSidebarResizeWin(GString *args[], int nArgs,
 }
 
 void XpdfViewer::cmdPageDown(GString *args[], int nArgs, QInputEvent *event) {
-  currentTab->pdf->scrollPageDown();
+  currentTab->pdf->handlePageChange(1) ; //scrollPageDown();
 }
 
 void XpdfViewer::cmdPageUp(GString *args[], int nArgs, QInputEvent *event) {
-  currentTab->pdf->scrollPageUp();
+  currentTab->pdf->handlePageChange(-1); //scrollPageUp();
 }
 
 void XpdfViewer::cmdPostPopupMenu(GString *args[], int nArgs,
