@@ -190,6 +190,7 @@ private slots:
   void sideBySideContinuousModeMenuAction();
   void horizontalContinuousModeMenuAction();
   void fullScreenMenuAction(bool checked);
+  void fullScreenAction();
   void rotateClockwiseMenuAction();
   void rotateCounterclockwiseMenuAction();
   void zoomToSelectionMenuAction();

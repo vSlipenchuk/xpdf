@@ -568,7 +568,7 @@ void SysFontList::scanFontconfigFonts() {
     FcFontSetDestroy(fontSet);
   }
 
-  FcFini();
+ // FcFini() ; // Not to crash ! vs
 }
 #endif // HAVE_FONTCONFIG
 
@@ -1704,6 +1704,8 @@ GBool GlobalParams::parseKey(GString *modKeyStr, GString *contextStr,
 
   *mods = xpdfKeyModNone;
   p0 = modKeyStr->getCString();
+
+printf("ParseKey=%s\n",p0);
   while (1) {
     if (!strncmp(p0, "shift-", 6)) {
       *mods |= xpdfKeyModShift;
@@ -1772,6 +1774,7 @@ GBool GlobalParams::parseKey(GString *modKeyStr, GString *contextStr,
 	     p0[10] >= '0' && p0[10] <= '9' &&
 	     (!p0[11] || (p0[11] >= '0' && p0[11] <= '9' && !p0[12])) &&
 	     (btn = atoi(p0 + 10)) >= 1 && btn <= 32) {
+ printf("MouseClicked btn=%d\n",btn);
     *code = xpdfKeyCodeMouseClick1 + btn - 1;
   } else if (*p0 >= 0x20 && *p0 <= 0x7e && !p0[1]) {
     *code = (int)*p0;

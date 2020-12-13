@@ -2003,12 +2003,63 @@ void XpdfWidget::mousePressEvent(QMouseEvent *e) {
   emit mousePress(e);
 }
 
+int sensScroll = 50; // sesitive scroll area
+double zoomStep = 0.05; 
+
 void XpdfWidget::mouseReleaseEvent(QMouseEvent *e) {
   int x, y;
+  double f;
+
+// define Zoom & Rotation
+f = getZoom(); if (f<0) f=100;
+int r =  getRotate();
+if ( r == 90 || r == 270) {  } else r=0;
+
+if (e->y() < sensScroll  ) { // go back 
+   if (r) { // if rotated 
+        gotoPreviousPage();
+        zoomCentered(f/3);
+        zoomCentered(f);
+        }
+    else scrollPageUp();
+   }
+else if (height()-e->y() < sensScroll ) // go UP
+  {
+   if (r) { // rotated, goto nextpage, keep center of page
+    gotoNextPage();
+    zoomCentered(f/3);
+    zoomCentered(f);
+    }
+    else scrollPageDown(); // just next screen 
+  }
+else if (e->x() < sensScroll) // zoom less
+ {
+  f=core->getZoom();
+  if (f<0) f=100;
+  //printf("Zoom=%lf\n",f);
+  f=f*(1-zoomStep);
+  core->zoomCentered(f);
+  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  }
+else if (e->x()>width()-sensScroll) // zoom more
+ {
+  f=core->getZoom();
+  if (f<0) f=100;
+  //printf("Zoom=%lf\n",f);
+  f=f*(1+zoomStep);
+  core->zoomCentered(f);
+  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+ }
+ 
 
   if (!mousePassthrough) {
     x = (int)(e->x() * scaleFactor);
     y = (int)(e->y() * scaleFactor);
+    
+    
     if (e->button() == Qt::LeftButton) {
       core->endSelection(x, y);
     } else if (e->button() == Qt::MidButton) {

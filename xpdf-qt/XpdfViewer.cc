@@ -1776,6 +1776,9 @@ void XpdfViewer::cmdRun(GString *args[], int nArgs, QInputEvent *event) {
 						      &mPage, &mX, &mY);
 	  }
 	  gotMouse = gTrue;
+	  
+	  printf("Mouse x=%d y=%d, got=%d\n",mX,mY,gotMouse);
+	  
 	}
 	if (c1 == 'i') {
 	  sprintf(buf, "%d", mPage);
@@ -2582,6 +2585,12 @@ void XpdfViewer::horizontalContinuousModeMenuAction() {
   execCmd("horizontalContinuousMode", NULL);
 }
 
+
+void XpdfViewer::fullScreenAction() {
+fullScreenMenuItem->setChecked(1);
+execCmd("fullScreenMode", NULL);
+}
+
 void XpdfViewer::fullScreenMenuAction(bool checked) {
   execCmd(checked ? "fullScreenMode" : "windowMode", NULL); 
 }
@@ -2983,6 +2992,7 @@ void XpdfViewer::createToolBar() {
 	  this, SLOT(zoomEditingFinished()));
   toolBar->addWidget(zoomComboBox);
   addToolBarSpacing(4);
+
   fitWidthBtn = addToolBarButton(QIcon(":/fitWidth-button"),
 				 SLOT(fitWidthButtonPressed()),
 				 "fit page width to window");
@@ -2991,6 +3001,17 @@ void XpdfViewer::createToolBar() {
 				"fit page to window");
 
   addToolBarSeparator();
+  
+// add fullscreen read buttons ---
+
+   addToolBarButton(QIcon(":/fitWidth-button"),
+				 SLOT(rotateClockwiseMenuAction()),
+				 "rotate clockwise cmd");
+   addToolBarButton(QIcon(":/fitPage-button"),
+				SLOT(fullScreenAction()),
+				"fullscreen view");
+
+
 
   //--- find controls
   addToolBarStretch();
